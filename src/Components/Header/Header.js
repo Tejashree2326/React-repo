@@ -1,151 +1,111 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react'
 import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom';
+import { Alert, Snackbar, TextField } from '@mui/material';
+import './Header.scss';
 
-const pages = [{ name: 'Post Blog', link: 'post-blog' }];
-
-const Header = () => {
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
-    const [anchorElUser, setAnchorElUser] = React.useState(null);
+const Header = (props) => {
 
     const history = useNavigate()
 
-    let settings
-    if (localStorage.getItem('token')) {
-        settings = [{ name: 'Logout', onClick: () => localStorage.removeItem('token') }];
-    } else {
-        settings = [{ name: 'Login', onClick: () => history('/login') }];
-    }
+    const [name, setName] = useState('Guest');
+    const [isLogedin, setIsLogedin] = useState(false);
 
-    const handleOpenNavMenu = (event) => {
-        setAnchorElNav(event.currentTarget);
-    };
-    const handleOpenUserMenu = (event) => {
-        setAnchorElUser(event.currentTarget);
-    };
+    const [logoutMessage, setLogoutMessage] = useState(false);
 
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
-    };
-
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
-    };
+    useEffect(() => {
+        if (localStorage.getItem('token')) {
+            setIsLogedin(true)
+            setName(localStorage.getItem('firstName'))
+        } else {
+            setIsLogedin(false)
+            setName("Guest")
+        }
+    }, [props.token, props.firstName]);
 
     return (
-        <div>
-            <AppBar position="static">
+        <div
+            className="header"
+        >
+            <AppBar
+                id="top_navig_bar"
+                position="static"
+            >
                 <Container maxWidth="xl">
-                    <Toolbar disableGutters>
+                    <Toolbar
+                        style={{
+                            justifyContent: 'space-between'
+                        }}
+                        disableGutters
+                    >
                         <Typography
+                            style={{
+                                cursor: 'pointer'
+                            }}
+                            id="home"
                             variant="h6"
-                            noWrap
                             component="div"
                             sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
                             onClick={() => history('/')}
                         >
                             Home
                         </Typography>
-
-                        <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-                            <IconButton
-                                size="large"
-                                aria-label="account of current user"
-                                aria-controls="menu-appbar"
-                                aria-haspopup="true"
-                                onClick={handleOpenNavMenu}
-                                color="inherit"
-                            >
-                                <MenuIcon />
-                            </IconButton>
-                            <Menu
-                                id="menu-appbar"
-                                anchorEl={anchorElNav}
-                                anchorOrigin={{
-                                    vertical: 'bottom',
-                                    horizontal: 'left',
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'left',
-                                }}
-                                open={Boolean(anchorElNav)}
-                                onClose={handleCloseNavMenu}
-                                sx={{
-                                    display: { xs: 'block', md: 'none' },
-                                }}
-                            >
-                                {pages.map((page) => (
-                                    <MenuItem key={page.name} onClick={handleCloseNavMenu}>
-                                        <Typography onClick={() => history(page.link)} textAlign="center">{page.name}</Typography>
-                                    </MenuItem>
-                                ))}
-                            </Menu>
-                        </Box>
                         <Typography
                             style={{
                                 cursor: 'pointer'
                             }}
-                            variant="h6"
-                            noWrap
+                            id="pers_greet"
                             component="div"
-                            sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
+                            sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+                            onClick={() => history('/login')}
                         >
-                            LOGO
+                            Hello {name}
                         </Typography>
-                        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                            {pages.map((page) => (
-                                <Button
-                                    key={page}
-                                    onClick={() => history(page.link)}
-                                    sx={{ my: 2, color: 'white', display: 'block' }}
-                                >
-                                    {page.name}
-                                </Button>
-                            ))}
-                        </Box>
-
-                        <Box sx={{ flexGrow: 0 }}>
-                            <Tooltip title="Open settings">
-                                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                    <MenuIcon />
-                                </IconButton>
-                            </Tooltip>
-                            <Menu
-                                sx={{ mt: '45px' }}
-                                id="menu-appbar"
-                                anchorEl={anchorElUser}
-                                anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
+                        <div
+                            className="login-register-container"
+                        >
+                            <Typography
+                                style={{
+                                    cursor: 'pointer'
                                 }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                open={Boolean(anchorElUser)}
-                                onClose={handleCloseUserMenu}
+                                id="login"
+                                noWrap
+                                component="div"
+                                sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+                                onClick={isLogedin ? () => { localStorage.removeItem('token'); localStorage.removeItem('firstName'); setLogoutMessage(true); props.setFirstName("Guest") } : () => history('/login')}
                             >
-                                {settings.map((setting) => (
-                                    <MenuItem onClick={setting.onClick}>
-                                        <Typography textAlign="center">{setting.name}</Typography>
-                                    </MenuItem>
-                                ))}
-                            </Menu>
-                        </Box>
+                                {isLogedin ? "Logout" : "Login"}
+                            </Typography>
+
+                            {!isLogedin && (
+                                <Typography
+                                    style={{
+                                        cursor: 'pointer'
+                                    }}
+                                    id="register"
+                                    component="div"
+                                    sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+                                    onClick={() => history('/register')}
+                                >
+                                    Register
+                                </Typography>
+                            )}
+                        </div>
+                        <Snackbar
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                            open={logoutMessage}
+                            autoHideDuration={3000}
+                            onClose={() => {
+                                setLogoutMessage(false)
+                            }}
+                        >
+                            <Alert severity="success" sx={{ width: '100%' }}>
+                                You have been logged out.
+                            </Alert>
+                        </Snackbar>
                     </Toolbar>
                 </Container>
             </AppBar>
