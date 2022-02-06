@@ -2,24 +2,37 @@
     display: flex;
     padding: 30px;
     flex-direction: column;
+    background-color: #e3dac9;
+    height: 70vh;
 
     .blog_post {
         display: flex;
         flex-wrap: wrap;
+        
     }
 
     .blog-card {
-        min-height: 300px;
+        height: 400px;
+        cursor: pointer;
         width: 300px;
         box-shadow: 0 0 10px 1px lightgray;
         display: flex;
         align-items: center;
         flex-direction: column;
         margin-right: 30px;
+        overflow: hidden;
+        background-color: #a99a86 ;
     }
 
     .post_title {
         font-size: 20px;
         font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .short_description {
+        height: 100px;
+        margin-top: 0;
+        overflow: hidden;
     }
 }
