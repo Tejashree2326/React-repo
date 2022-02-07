@@ -1,1 +1,1 @@
-export const baseUrl = "http://flask-c21123464.apps.openshift.cs.cf.ac.uk/" //base url for backend
+export const baseUrl = "http://flask-c21123464.apps.openshift.cs.cf.ac.uk" //base url for backend
